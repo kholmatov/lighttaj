@@ -1,0 +1,21 @@
+{
+    "name": "kholmatov/yii2-imagick",
+    "description": "Yii2 class for working with Imagick.",
+    "type": "yii2-extension",
+    "keywords": ["yii2","extension","kholmatov","imagick"],
+    "license": "GPL-3.0+",
+    "authors": [
+        {
+            "name": "kholmatov",
+            "email": "ekholmatov@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "kholmatov\\imagick\\": ""
+        }
+    }
+}

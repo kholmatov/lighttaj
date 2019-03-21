@@ -1,0 +1,16 @@
+OS: Ubuntu 14.04.4 LTS (GNU/Linux 3.13.0-48-generic x86_64), http://www.ubuntu.com/
+Web server: Nginx 1.4.6, http://nginx.org/
+Programming Language: PHP 5.5.9, http://php.net/
+Datebase: MySQL 5.6.23 Community Server (GPL), https://www.mysql.com/
+* DH ADMIN:
+    Framework: Yii 2, http://www.yiiframework.com
+    Them: Bootstrap Responsive Admin Template, http://egrappler.com/templatevamp-free-twitter-bootstrap-admin-template/
+    Modules & Plugins:
+        - jQuery touchTouch plugin, http://tutorialzine.com/2012/04/mobile-touch-gallery/
+        - yii2-aws-sdk, https://packagist.org/packages/fedemotta/yii2-aws-sdk
+
+* DH API:
+    Framework: Slim, http://www.slimframework.com/
+    Modules & Plugins:
+        - AWS SDK for PHP - Version 3,https://packagist.org/packages/aws/aws-sdk-php
+        - PHPMailer, https://packagist.org/packages/phpmailer/phpmailer

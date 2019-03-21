@@ -1,0 +1,5 @@
+{
+    "require": {
+        "kholmatov/yii2-imagick": "dev-master"
+    }
+}
