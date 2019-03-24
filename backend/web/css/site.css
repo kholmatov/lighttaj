@@ -118,7 +118,7 @@ a.desc:after {
     position: relative;
     overflow: hidden;
     height:22px;
-    margin-bottom:10px !important;
+    margin-bottom:15px !important;
 }
 
 .myfile-input input[type=file],
@@ -135,7 +135,4 @@ a.desc:after {
     background: white;
     cursor: inherit;
     display: block;
-}
-.help-block,.help-block-error{
-    color:#f00 !important;
 }

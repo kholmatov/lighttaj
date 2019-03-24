@@ -23,14 +23,13 @@ $this->params['breadcrumbs'][] = $this->title;
         <!-- /widget-header -->
         <?php
 
-        $title=Html::encode($this->title);
+            $title=Html::encode($this->title);
         $mySearch='<div style="float:right;margin:3px 5px 0 0">
                         <form action="" method="GET" class="filters">
                             <input type="text" name="CategorySearch[searchstring]" placeholder="Search" value="'.$searchModel->searchstring.'" class="form-control">
                         </form>
                     </div>';
         ?>
-
         <div class="widget-content">
             <div class="widget big-stats-container">
                 <div class="widget-content">
@@ -52,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format'=> 'raw',
                 'headerOptions'=>['width'=>'50'],
                 'value'=>function($data){
-                    $categoryImage = AssetManager::URLForCategoryIconDirectory().'/'.$data->id.'_med.png?rnd='.rand(0,100);
+                    $categoryImage = AssetManager::URLForCategoryIconDirectory().'/'.$data->id.'_med.png';
 
                     if($categoryImage!=""){
                         return Html::a(
@@ -97,17 +96,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 },
                 // 'headerOptions' => ['width'=>'80']
             ],
-            [
-                'attribute' => 'status',
-                'format' => 'raw',
-                'value' => function($data){
-                    if($data->status)
-                        return '<center style="color:#00ab30"><span title="Active" alt="Active" style="color:#00ab30" class="glyphicon glyphicon-ok"></span> Activate</center>';
-                    else
-                        return '<center style="color:#ab2610"><span title="Deactive" alt="Deactive" style="color:#ab2610" class="glyphicon glyphicon-remove"></span> Deactivate</center>';
-                },
-                'headerOptions' => ['width' => '60']
-            ],
             ['class' => 'yii\grid\ActionColumn','template'    => '{update}{delete}','headerOptions' => ['width' => '30']],
         ],
     ]); ?>
@@ -116,7 +104,6 @@ $this->params['breadcrumbs'][] = $this->title;
 
             </div>
         </div>
-
     </div>
 
 

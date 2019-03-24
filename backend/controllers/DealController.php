@@ -27,7 +27,8 @@ class DealController extends Controller
                     ],
                     [
                         //'actions' => ['logout', 'index'],
-                        'actions' => ['logout', 'index','create','update','view','delete','flagged','suspended','dosuspend','doactive'],
+                        'actions' => ['logout', 'index','create','update','view','delete','flagged','suspended',
+                        'dosuspend','doactive'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -52,7 +53,7 @@ class DealController extends Controller
         $queryParams = Yii::$app->request->queryParams;
         $queryParams['DealSearch']['mystatus'] = [1, 2];
         $dataProvider = $searchModel->search($queryParams);
-        $this->backButton();
+
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -65,8 +66,6 @@ class DealController extends Controller
         $queryParams = Yii::$app->request->queryParams;
         $queryParams['DealSearch']['mystatus'] = [0, 2, 3];
         $dataProvider = $searchModel->search($queryParams);
-
-        $this->backButton();
 
         return $this->render('flagged', [
             'searchModel' => $searchModel,
@@ -81,8 +80,6 @@ class DealController extends Controller
         $queryParams = Yii::$app->request->queryParams;
         $queryParams['DealSearch']['mystatus'] = [0, 1, 3];
         $dataProvider = $searchModel->search($queryParams);
-
-        $this->backButton();
 
         return $this->render('suspended', [
             'searchModel' => $searchModel,
@@ -213,17 +210,5 @@ class DealController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    private function backButton(){
-        $session = Yii::$app->session;
-        $session->open();
-        $session->set('back', '');
-        if(isset(Yii::$app->request->queryParams['page']) && isset(Yii::$app->request->queryParams['DealSearch']['searchstring']))
-            $session->set('back', '?DealSearch[searchstring]='.Yii::$app->request->queryParams['DealSearch']['searchstring'].'&page='.Yii::$app->request->queryParams['page']);
-        elseif(isset(Yii::$app->request->queryParams['page']))
-            $session->set('back', '?page='.Yii::$app->request->queryParams['page']);
-        elseif(isset(Yii::$app->request->queryParams['DealSearch']['searchstring']))
-            $session->set('back', '?DealSearch[searchstring]='.Yii::$app->request->queryParams['DealSearch']['searchstring']);
     }
 }

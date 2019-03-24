@@ -23,25 +23,13 @@ $this->params['breadcrumbs'][] = $this->title;
             if($model->status==0) {
                 $sts = '<div style="color:#00ab30"><span title="Active" alt="Active" style="color:#00ab30" class="glyphicon glyphicon-ok"></span> Active</div>';
                 echo Html::a(Yii::t('lighttaj', 'Suspend'), ['dosuspend', 'id' => $model->id],
-                    ['class' => 'btn btn-danger','data-confirm' => Yii::t('yii', 'Are you sure you want to suspended this User?')]);
+                    ['class' => 'btn btn-danger','data-confirm' => Yii::t('yii', 'Are you sure you want to suspend this User?')]);
             }else {
-                $sts = '<div style="color:#ab2610"><span title="Suspended" alt="Suspended" style="color:#ab2610" class="glyphicon glyphicon-remove"></span> Suspended</div>';
-                echo Html::a(Yii::t('lighttaj', 'Activate'), ['doactive', 'id' => $model->id],['class' => 'btn btn-success']);
+                $sts = '<div style="color:#ab2610"><span title="Suspend" alt="Suspend" style="color:#ab2610" class="glyphicon glyphicon-remove"></span> Suspend</div>';
             }
 
-            /*
-            echo Html::a(Yii::t('lighttaj', 'Delete'), ['delete', 'id' => $model->id],
-                ['class' => 'btn btn-warning','data-confirm' => Yii::t('yii', 'Are you sure you want to delete this User?'),'data-method'=>'POST']);
-            */
-
             ?>
-            <?php
-            $session = Yii::$app->session;
-            $session->open();
-            $myUrl="";
-            if ($session->has('user_back')) $myUrl = $session->get('user_back');
-            echo Html::a(Yii::t('lighttaj','Back'), Url::toRoute('index').$myUrl,['class' => 'btn btn-invert']);
-            ?>
+            <?=Html::a(Yii::t('lighttaj','Back'), Url::toRoute('index'),['class' => 'btn btn-invert']) ?>
         </div>
     </div>
 
@@ -51,14 +39,14 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="span2">
             <div class="widget widget-nopad">
                 <div class="widget-content">
-                    <div class="widget big-stats-container mytouch myusers">
+                    <div class="widget big-stats-container mytouch">
                         <div class="widget-content">
                             <div class="img-bigstats" >
                                 <?php
                                 if($model->hasPhoto==1) {
-                                    $img = AssetManager::URLForUserImageFile($model->id);
+                                    $img = AssetManager::URLForUserImageFile ($model->id);
                                 }else{
-                                    $img = '../nophotouser.jpg';
+                                    $img='../nophotouser.jpg';
                                 }
                                 ?>
                                 <a href="<?=$img;?>">
@@ -163,9 +151,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <style>
     .widget{
         margin-bottom:0px;
-    }
-    .btn-warning{
-        margin-left:3px;
     }
 </style>
 <?php

@@ -41,7 +41,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         //'filterModel' => $searchModel,
                         'layout'=>"{pager}\n<div class=\"widget-header\"><i class=\"icon-user\"></i>
                         <h3>".$title."</h3>".$mySearch."{summary}</div>\n{items}\n<div style='clear:both'></div>{pager}",
-
                         'columns' => [
                             //['class' => 'yii\grid\SerialColumn'],
                             [
@@ -54,6 +53,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'format'=> 'raw',
                                 'headerOptions'=>['width'=>'50'],
                                 'value'=>function($data){
+
+
 
                                     if($data->hasPhoto==1){
                                         $usrImage = AssetManager::URLForUserImageFile($data->id);
@@ -101,17 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             ],
                             'email:email',
                             //'password',
-                            [
-                                'attribute' => 'confirmedEmail',
-                                'format' => 'raw',
-                                'value' => function($data){
-                                    if($data->confirmedEmail==1)
-                                        return '<center style="color:#00ab30"><span title="Yes" alt="Yes" style="color:#00ab30" class="glyphicon glyphicon-ok"></span> Yes</center>';
-                                    else
-                                        return '<center style="color:#ab2610"><span title="No" alt="No" style="color:#ab2610" class="glyphicon glyphicon-remove"></span> No</center>';
-                                },
-                                'headerOptions' => ['width' => '110']
-                            ],
+                            //'confirmedEmail:email',
                             [
                                 'attribute' => 'status',
                                 'format' => 'raw',
@@ -119,25 +110,11 @@ $this->params['breadcrumbs'][] = $this->title;
                                     if($data->status==0)
                                         return '<center style="color:#00ab30"><span title="Active" alt="Active" style="color:#00ab30" class="glyphicon glyphicon-ok"></span> Active</center>';
                                     else
-                                        return '<center style="color:#ab2610"><span title="Suspended" alt="Suspended" style="color:#ab2610" class="glyphicon glyphicon-remove"></span> Suspended</center>';
+                                        return '<center style="color:#ab2610"><span title="Suspend" alt="Suspend" style="color:#ab2610" class="glyphicon glyphicon-remove"></span> Suspend</center>';
                                 },
                                 'headerOptions' => ['width' => '60']
                             ],
-
-                            [
-                                'class' => 'yii\grid\ActionColumn',
-                                'template'    => '{view}{delete}',
-                                'buttons' => [
-                                    'delete' => function ($url, $model) {
-                                        return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
-                                            'title' => Yii::t('app', 'Delete'),
-                                            'data-confirm'=>'Are you sure you want to delete this User ('.$model->username.')? ONLY FOR TESTING PURPOSES!!!',
-                                            'data-method'=>'POST'
-                                        ]);
-                                    }
-                                ],
-                                'headerOptions' => ['width' => '15']
-                            ],
+                            ['class' => 'yii\grid\ActionColumn','template'    => '{view}', 'headerOptions' => ['width' => '15']],
                         ],
                     ]); ?>
                 </div>

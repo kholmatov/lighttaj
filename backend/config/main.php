@@ -82,12 +82,11 @@ return [
         'awssdk' => [
             'class' => 'fedemotta\awssdk\AwsSdk',
             'credentials' => [
-                'key' => '',
-                'secret' => '',
+                'key' => 'AWS_ACCESS_KEY',
+                'secret' => 'lighttaj',
             ],
             'region' => 'us-east-1', //i.e.: 'us-east-1'
             'version' => 'latest', //i.e.: 'latest'
-            'scheme' => 'http' //ssl check disable
         ]
 
     ],

@@ -108,7 +108,7 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'category',
                 'value' => 'category.name',
-                'headerOptions' => ['width' => '90'],
+                'headerOptions' => ['width' => '100'],
             ],
             [
                 'attribute' => 'storeName',
@@ -124,19 +124,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'user',
                 'label' => 'User',
                 'value' => 'user.username',
-                'headerOptions' => ['width' => '90'],
+                'headerOptions' => ['width' => '100'],
             ],
             [
                 'attribute'=>'dateCreated',
                 'label'=>'Date posted',
                 'format'=>'datetime',
-                'headerOptions' => ['width' => '9'],
-            ],
-            [
-                'attribute'=>'dateEnding',
-                'label'=>'Date ending',
-                'format'=>'datetime',
-                'headerOptions' => ['width' => '9'],
+                'headerOptions' => ['width' => '10'],
             ],
             //'status',
             [
@@ -148,13 +142,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         else
                             return '<center><div style="color:#ab2610"><span class="glyphicon glyphicon-remove" style="color:#ab2610" alt="Expired" title="Expired"></span> Expired</div>';
                 },
-                'headerOptions' => ['width' => '50']
+                'headerOptions' => ['width' => '60']
             ],
             [
                 //'label' => 'Action',
                 'class' => 'yii\grid\ActionColumn',
-                'headerOptions' => ['width' => '20'],
-                'template'    => '{view}{delete}',//{delete}
+                'headerOptions' => ['width' => '15'],
+                'template'    => '{view}',
 
             ],
 
@@ -167,8 +161,3 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
-<style>
-    .table th, .table td {
-        padding:4px !important;
-    }
-</style>

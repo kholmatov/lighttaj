@@ -5,8 +5,6 @@ use yii\widgets\DetailView;
 use backend\assets\AssetManager;
 use backend\models\Category;
 use backend\models\User;
-use backend\models\UserDealLike;
-use backend\models\UserDealFavorite;
 use yii\helpers\Url;
 /* @var $this yii\web\View */
 /* @var $model backend\models\Deal */
@@ -20,6 +18,7 @@ $img1='../nophoto.jpg';
 if(count($myImage) > 0){
     $img1 = $myImage[0];
 }
+
 ?>
 
 <div class="row">
@@ -44,11 +43,7 @@ if(count($myImage) > 0){
                 $sts='<div style="color:#ab2610"><span title="Flagged" alt="Flagged" style="color:#ab2610" class="glyphicon glyphicon-flag"></span> Flagged</div>';
             elseif($model->status==2):
                 $backurl = Url::toRoute('suspended');
-
-                echo Html::a(Yii::t('lighttaj', 'Activate'), ['doactive', 'id' => $model->id],
-                    ['class' => 'btn btn-success','data-confirm' => Yii::t('yii', 'Are you sure you want to activate this deal?')]);
-
-                $sts='<div style="color:#ab2610"><span class="glyphicon icon-bookmark-empty" style="color:#ab2610" alt="Suspend title="Suspend"></span> Suspended</div>';
+                $sts='<div style="color:#ab2610"><span class="glyphicon icon-bookmark-empty" style="color:#ab2610" alt="Suspend title="Suspend"></span> Suspend</div>';
             elseif($model->status==3):
                 $backurl = Url::toRoute('index');
                 $sts='<div style="color:#ab2610"><span class="glyphicon glyphicon-remove" style="color:#ab2610" alt="Expired" title="Expired"></span> Expired</div>';
@@ -56,39 +51,34 @@ if(count($myImage) > 0){
             //
             ?>
 
-            <?php
-            $session = Yii::$app->session;
-            $session->open();
-            $myUrl="";
-            if ($session->has('back')) $myUrl = $session->get('back');
-            echo Html::a(Yii::t('lighttaj','Back'), $backurl.$myUrl,['class' => 'btn btn-invert']);
-            ?>
+            <?=Html::a(Yii::t('lighttaj','Back'), $backurl, ['class' => 'btn btn-invert']) ?>
         </div>
     </div>
-    <div class="span12 mydeal">
+    <div class="span12">
 
-        <div class="span4" style="width:370px !important">
+        <div class="span4">
             <div class="widget widget-nopad">
                 <div class="widget-content">
                     <div class="widget big-stats-container mytouch">
                         <div class="widget-content">
-                                    <div class="img-bigstats" >
-                                        <a href="<?= $img1; ?>">
-                                            <img src="<?= $img1; ?>" width="100%">
-                                        </a>
-                                    </div>
-                                    <?php
-                              if(count($myImage)>1):
+
+                            <div class="img-bigstats">
+                                <a href="<?=$img1;?>">
+                                <img src="<?=$img1;?>" width="100%">
+                                </a>
+                            </div>
+                            <?php
+                                if(count($myImage)>1):
                                     echo'<div id="big_stats" class="cf">';
                                        for($i=1;$i < count($myImage);$i++) {
-                                           echo' <a href = "'.$myImage[$i].'" >
-                                           <div class="mystat" style="background: url('.$myImage[$i].') 100% 100% no-repeat; background-size: cover;" >
-                                           </div>
-                                            </a>';
+                                           echo'<div class="mystat" >
+                                            <a href = "'.$myImage[$i].'" >
+                                                <img src = "'.$myImage[$i].'" width = "100%" >
+                                            </a>
+                                            </div>';
                                         }
                                     echo'</div>';
                                 endif;
-                            // <img src = "'.$myImage[$i].'" width = "100%" >
                             ?>
 
                         </div>
@@ -109,9 +99,7 @@ if(count($myImage) > 0){
                                 //print_r($model);
                                 $category = Category::findOne($model->categoryID);
                                 $user = User::findOne($model->userID);
-                                $countLike =  UserDealLike::find()->where(['dealID'=>$model->id,'likeVal'=>1])->count();
-                                $countDislike =  UserDealLike::find()->where(['dealID'=>$model->id,'likeVal'=>'-1'])->count();
-                                $countFavorite =  UserDealFavorite::find()->where(['dealID'=>$model->id])->count();
+
 
                             ?>
                             <?= DetailView::widget([
@@ -150,26 +138,6 @@ if(count($myImage) > 0){
                                     'units',
                                     'benefit',
                                     //'status',
-                                    [
-                                        'attribute'=>'favorite',
-                                        'label'=>'Total Favorites',
-                                        'format'=>'raw',
-                                        'value'=> $countFavorite
-                                    ],
-                                    [
-                                        'attribute'=>'like',
-                                        'label'=>'Total Likes',
-                                        'format'=>'raw',
-                                        'value'=>$countLike
-                                    ],
-                                    [
-                                        'attribute'=>'dislike',
-                                        'label'=>'Total Dislikes',
-                                        'format'=>'raw',
-                                        'value'=>$countDislike
-                                    ],
-
-
                                     [
                                         'attribute'=>'status',
                                         'label'=>'Status',

@@ -9,7 +9,7 @@ use yii\bootstrap\Nav;
 //use yii\bootstrap\Icon;
 //use yii\bootstrap\NavBar;
 //use yii\widgets\Breadcrumbs;
-use yii\helpers\Url;
+//use yii\helpers\Url;
 use common\widgets\Alert;
 
 AppAsset::register($this);
@@ -30,7 +30,7 @@ AppAsset::register($this);
 
         <link href="<?=Yii::$app->request->baseUrl?>/them/css/bootstrap.min.css" rel="stylesheet">
         <link href="<?=Yii::$app->request->baseUrl?>/them/css/bootstrap-responsive.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
         <link href="<?=Yii::$app->request->baseUrl?>/them/css/font-awesome.css" rel="stylesheet">
         <link href="<?=Yii::$app->request->baseUrl?>/them/css/style.css" rel="stylesheet">
         <link href="<?=Yii::$app->request->baseUrl?>/them/css/pages/dashboard.css" rel="stylesheet">
@@ -46,7 +46,7 @@ AppAsset::register($this);
         <link href="<?=Yii::$app->request->baseUrl?>/them/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
         <link href="<?=Yii::$app->request->baseUrl?>/them/css/bootstrap-responsive.min.css" rel="stylesheet" type="text/css" />
         <link href="<?=Yii::$app->request->baseUrl?>/them/css/font-awesome.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
+        <link href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600" rel="stylesheet">
         <link href="<?=Yii::$app->request->baseUrl?>/them/css/style.css" rel="stylesheet" type="text/css">
         <link href="<?=Yii::$app->request->baseUrl?>/them/css/pages/signin.css" rel="stylesheet" type="text/css">
     <?php endif;?>
@@ -59,24 +59,21 @@ AppAsset::register($this);
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
             <div class="container"> <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
-                        class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span> </a><a class="brand" href="<?=Url::toRoute(['/'])?>"> Deal Hunters Admin</a>
+                        class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span> </a><a class="brand" href="/">lighttaj</a>
                 <div class="nav-collapse">
                     <ul class="nav pull-right">
                         <li class="dropdown">
-                            <a href="<?=Url::toRoute(['/manager'])?>" class="dropdown-toggle" data-toggle="dropdown">
-                                <i class="icon-group"></i> Admin list</a>
-<!--                                <b class="caret"></b></a>-->
-<!--                            <ul class="dropdown-menu">-->
-<!--                                <li><a href="javascript:;">Settings</a></li>-->
-<!--                                <li><a href="javascript:;">Help</a></li>-->
-<!--                            </ul>-->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="icon-cog"></i> Account <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="javascript:;">Settings</a></li>
+                                <li><a href="javascript:;">Help</a></li>
+                            </ul>
                         </li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                                     class="icon-user"></i> <?=Yii::$app->user->identity->username;?> <b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><?=Html::a('Profile', Url::toRoute(['/manager/view','id'=>Yii::$app->user->identity->id]),['title' => 'Profile']); ?></li>
-                                <li><?=Html::a('Change Password', Url::toRoute(['/manager/changepassword']),['title' => 'Change Password']); ?></li>
-
+                                <li><a href="javascript:;">Profile</a></li>
                                 <li>
                                    <?=Html::a('Logout',['/site/logout'],['data-method'=>'post']);?>
                                 </li>
@@ -136,12 +133,12 @@ AppAsset::register($this);
         <!-- /main-inner -->
     </div>
     <!-- /main -->
-    <div class="footer" >
+
+    <div class="footer">
         <div class="footer-inner">
             <div class="container">
                 <div class="row">
-                    <div class="span3"> &copy; <?= date('Y') ?> <a href="/">Deal Hunters Admin</a> </div>
-                    <div class="span3" style="float:right;text-align:right">Developed by <a target="_blank" href="http://bartsoft.com">Bartsoft.com</a> </div>
+                    <div class="span12"> &copy; <?= date('Y') ?> <a href="/">lighttaj</a>. </div>
                     <!-- /span12 -->
                 </div>
                 <!-- /row -->
@@ -151,27 +148,10 @@ AppAsset::register($this);
         <!-- /footer-inner -->
     </div>
     <!-- /footer -->
+
 <?php else:?>
-        <?= $content ?>
-    <div class="footer" style="position:fixed;bottom:0;width:100%;display:block;">
-        <div class="footer-inner">
-            <div class="container">
-                <div class="row">
-                    <div class="span3"> &copy; <?= date('Y') ?> <a href="/">Deal Hunters Admin</a> </div>
-                    <div class="span3" style="float:right;text-align:right">Developed by <a target="_blank" href="http://bartsoft.com">Bartsoft.com</a> </div>
-                    <!-- /span12 -->
-                </div>
-                <!-- /row -->
-            </div>
-            <!-- /container -->
-        </div>
-        <!-- /footer-inner -->
-    </div>
-    <!-- /footer -->
-
+    <?= $content ?>
 <?php endif;?>
-
-
 
 <?php $this->endBody() ?>
 </body>

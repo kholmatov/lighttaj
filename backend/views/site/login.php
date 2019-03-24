@@ -6,7 +6,7 @@
 
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
-use yii\helpers\Url;
+
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -23,8 +23,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 <span class="icon-bar"></span>
             </a>
 
-            <a class="brand" href="<?=Url::toRoute(['/'])?>">
-                Deal Hunters Admin
+            <a class="brand" href="/">
+                lighttaj
             </a>
         </div> <!-- /container -->
 

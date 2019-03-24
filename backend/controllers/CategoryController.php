@@ -5,7 +5,6 @@ namespace backend\controllers;
 use Yii;
 use backend\models\Category;
 use backend\models\CategorySearch;
-use backend\models\Deal;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -13,13 +12,22 @@ use yii\filters\AccessControl;
 use backend\assets\AssetManager;
 use yii\web\UploadedFile;
 use yii\imagine\Image;
+//use yii\imagine\Box;
 use Imagine\Image\Box;
-
 /**
  * CategoryController implements the CRUD actions for Category model.
  */
 class CategoryController extends Controller
 {
+
+    const CategoryItemWidth_big    = 96;
+    const CategoryItemHeight_big   = 96;
+
+    const CategoryItemWidth_med    = 64;
+    const CategoryItemHeight_med   = 64;
+
+    const CategoryItemWidth_small    = 32;
+    const CategoryItemHeight_small   = 32;
 
     public function behaviors()
     {
@@ -33,7 +41,7 @@ class CategoryController extends Controller
                     ],
                     [
                         //'actions' => ['logout', 'index'],
-                        'actions' => ['logout', 'index', 'create', 'update', 'view', 'delete', 'activate', 'deactivate'],
+                        'actions' => ['logout', 'index','create','update','view','delete','flagged','suspended','dosuspend','doactive'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -56,7 +64,6 @@ class CategoryController extends Controller
     {
         $searchModel = new CategorySearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $this->backButton();
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -84,24 +91,24 @@ class CategoryController extends Controller
     public function actionCreate()
     {
         $model = new Category();
-
+        //print_r($elb);
         if ($model->load(Yii::$app->request->post())) {
-            $model->status = 1;
+            //return $this->redirect(['view', 'id' => $model->id]);
             $model->file = UploadedFile::getInstance($model, 'file');
             if (!empty($model->file)) {
                 //“Please add an icon 92x92 pix to create a category”
-                $rs = $this->UploadIco($model);
+                $rs = $this->UploadIco ($model);
                 if ($rs) {
-                    Yii::$app->session->setFlash('success', 'Category create success!');
-                    return $this->redirect('index');
+                    Yii::$app->session->setFlash ('success', 'Category create success!');
+                    return $this->redirect ('index');
                 } else {
-                    return $this->render('create', [
+                    return $this->render ('create', [
                         'model' => $model,
                     ]);
                 }
-            } else {
-                Yii::$app->session->setFlash('error', 'Please add an png icon 96x96 pix to create a category!');
-                return $this->render('create', [
+            }else{
+                Yii::$app->session->setFlash ('error', 'Please add an png icon 96x96 pix to create a category!');
+                return $this->render ('create', [
                     'model' => $model,
                 ]);
             }
@@ -114,31 +121,28 @@ class CategoryController extends Controller
         }
     }
 
-    private function UploadIco($model)
-    {
+    private function UploadIco($model){
 
         $model->file = UploadedFile::getInstance($model, 'file');
 
-        $categorypath = dirname(__FILE__) . '/../web/assets/category/';
+        $categorypath = dirname(__FILE__).'/../web/assets/category/';
         $success = true;
-        if (!is_dir($categorypath)) {
-
+        if (!is_dir( $categorypath)) {
             $success = mkdir($categorypath, 0777, true);
-
         }
 
         if (!$success) {
             Yii::$app->session->setFlash('error', "Can't create category directory");
             return 0;
         }
-        // $file =  UploadedFile::getInstanceByName('file');
+       // $file =  UploadedFile::getInstanceByName('file');
 
         $image = new Image();
         $open = $image->getImagine()->open($model->file->tempName);
         $size = $open->getSize();
         $width = $size->getWidth();
         $height = $size->getHeight();
-        if ($size->getWidth() != AssetManager::CategoryItemWidth_big || $size->getHeight() != AssetManager::CategoryItemHeight_big) {
+        if ($size->getWidth() != self::CategoryItemWidth_big || $size->getHeight() != self::CategoryItemHeight_big) {
             Yii::$app->session->setFlash('error', "Please upload only PNG of size 96x96");
             return 0;
         }
@@ -150,35 +154,35 @@ class CategoryController extends Controller
 
         $model->save();
 
-        $ext = $model->file->extension;
-        $newFile = $categorypath . $model->id . '_big.' . $ext;
+        $ext=$model->file->extension;
+        $newFile = $categorypath.$model->id.'_big.'.$ext;
         $rsupload = $model->file->saveAs($newFile);
 
-        if (!$rsupload) {
+        if(!$rsupload){
             Yii::$app->session->setFlash('error', "Error Upload!");
             return 0;
         }
 
-        $med = $categorypath . $model->id . '_med.' . $ext;
-        Image::frame($newFile, 0)
-            ->thumbnail(new Box(AssetManager::CategoryItemWidth_med, AssetManager::CategoryItemHeight_med))
+        $med = $categorypath.$model->id.'_med.'.$ext;
+        Image::frame($newFile)
+            ->thumbnail(new Box(self::CategoryItemWidth_med, self::CategoryItemHeight_med))
             ->save($med, ['quality' => 100]);
 
-        $small = $categorypath . $model->id . '_small.' . $ext;
-        Image::frame($newFile, 0)
-            ->thumbnail(new Box(AssetManager::CategoryItemWidth_small, AssetManager::CategoryItemHeight_small))
+        $small = $categorypath.$model->id.'_small.'.$ext;
+        Image::frame($newFile)
+            ->thumbnail(new Box(self::CategoryItemWidth_small, self::CategoryItemHeight_small))
             ->save($small, ['quality' => 100]);
 
 
-        $rs = AssetManager::saveCategoryIcon($categorypath, $model->id);
-        if ($rs == 1) {
+       $rs = AssetManager::saveCategoryIcon($categorypath, $model->id);
+        if($rs==1){
             $model->file = 0;
             $model->hasIco = 1;
             $model->save();
             Yii::$app->session->setFlash('success', 'Icon upload success!');
             return 1;
-        } else {
-            Yii::$app->session->setFlash('error', $rs);
+        }else{
+             Yii::$app->session->setFlash('error', $rs);
             return 0;
         }
     }
@@ -196,21 +200,22 @@ class CategoryController extends Controller
         if ($model->load(Yii::$app->request->post())) {
             $model->file = UploadedFile::getInstance($model, 'file');
             if (!empty($model->file)) {
-                $rs = $this->UploadIco($model);
-                if ($rs) {
-                    Yii::$app->session->setFlash('success', 'Category update success!');
-                    return $this->redirect('index');
-                } else {
+               $rs = $this->UploadIco($model);
+                if($rs) {
+                    Yii::$app->session->setFlash ('success', 'Category update success!');
+                    return $this->redirect ('index');
+                }else{
                     return $this->render('update', [
                         'model' => $model,
                     ]);
                 }
-            } else {
+            }else{
                 $model->save();
             }
 
-            Yii::$app->session->setFlash('success', 'Category update success!');
-            return $this->redirect('index');
+            Yii::$app->session->setFlash ('success', 'Category update success!');
+            //return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect ('index');
 
         } else {
             return $this->render('update', [
@@ -227,47 +232,9 @@ class CategoryController extends Controller
      */
     public function actionDelete($id)
     {
-        if (Deal::find()->where(['categoryID' => $id])->count()) {
-            Yii::$app->session->setFlash('error', 'There are active deals for this category. For that reason this category cannot be deleted.');
-            return $this->redirect(['index']);
-        }
-
-        $result = AssetManager::deleteCategoryIconFromS3($id);
         $this->findModel($id)->delete();
-        Yii::$app->session->setFlash('success', 'Category deleted.');
+        Yii::$app->session->setFlash('success', 'Success delete!');
         return $this->redirect(['index']);
-    }
-
-    public function actionActivate($id)
-    {
-        $model = $this->findModel($id);
-        $model->status = 1;
-        $model->save();
-        Yii::$app->session->setFlash('success', 'Category is activated.');
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-
-    }
-
-    public function actionDeactivate($id)
-    {
-        $model = $this->findModel($id);
-        if (Deal::find()->where(['categoryID' => $id])->count()) {
-            Yii::$app->session->setFlash('error', 'There are active deals for this category. For that reason this category cannot be deactivated.');
-            return $this->render('update', [
-                'model' => $model,
-            ]);
-        }
-
-        $model->status = 0;
-        $model->save();
-        Yii::$app->session->setFlash('success', 'Category is deactivated.');
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
-
     }
 
     /**
@@ -284,18 +251,5 @@ class CategoryController extends Controller
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');
         }
-    }
-
-    private function backButton()
-    {
-        $session = Yii::$app->session;
-        $session->open();
-        $session->set('category_back', '');
-        if (isset(Yii::$app->request->queryParams['page']) && isset(Yii::$app->request->queryParams['CategorySearch']['searchstring']))
-            $session->set('category_back', '?CategorySearch[searchstring]=' . Yii::$app->request->queryParams['CategorySearch']['searchstring'] . '&page=' . Yii::$app->request->queryParams['page']);
-        elseif (isset(Yii::$app->request->queryParams['page']))
-            $session->set('category_back', '?page=' . Yii::$app->request->queryParams['page']);
-        elseif (isset(Yii::$app->request->queryParams['CategorySearch']['searchstring']))
-            $session->set('category_back', '?CategorySearch[searchstring]=' . Yii::$app->request->queryParams['CategorySearch']['searchstring']);
     }
 }

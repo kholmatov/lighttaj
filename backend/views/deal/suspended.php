@@ -138,7 +138,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'status',
                 'format' => 'raw',
                 'value' => function($data){
-                          return '<center><div style="color:#ab2610"><span class="glyphicon icon-bookmark-empty" style="color:#ab2610" alt="Suspended" title="Suspended"></span> Suspended</div></center>';
+                          return '<center><div style="color:#ab2610"><span class="glyphicon icon-bookmark-empty" style="color:#ab2610" alt="Suspend title="Suspend"></span> Suspend</div></center>';
                 },
                 'headerOptions' => ['width' => '60']
             ],

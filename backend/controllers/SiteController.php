@@ -7,7 +7,6 @@ use yii\web\Controller;
 use common\models\LoginForm;
 use yii\filters\VerbFilter;
 use backend\models\User;
-use backend\models\Deal;
 /**
  * Site controller
  */
@@ -56,32 +55,11 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
-        // *User status
-        // 0 - Active
-        // 1 - Suspended
-        $user_total_count = User::find()->count();
-
-        // *Deal status
-        //0 - active
-        //1 - flagged
-        //2 - suspend
-        //3 - expired
-        $deal_total_count = Deal::find()->count();
-        $deal_active_count = Deal::find()->where(['status'=>0])->count();
-        $deal_flagged_count = Deal::find()->where(['status'=>1])->count();
-        $deal_suspended_count = Deal::find()->where(['status'=>2])->count();
-        $deal_exprired_count = Deal::find()->where(['status'=>3])->count();
-        //$deal_today_count = Deal::find()->where('dateCreated = now()')->count();
-
+        $user_count = User::getUser_count('all');
         return $this->render('index',
             [
-                'user_total_count' => $user_total_count,
-                'deal_total_count'  => $deal_total_count,
-                'deal_active_count' => $deal_active_count,
-                'deal_flagged_count' => $deal_flagged_count,
-                'deal_suspended_count' => $deal_suspended_count,
-                'deal_expired_count' => $deal_exprired_count
-            ]
+        'user_count' => $user_count,
+        ]
         );
     }
 

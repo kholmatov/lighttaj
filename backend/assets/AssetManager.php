@@ -1,6 +1,7 @@
 <?php
 namespace backend\assets;
 use yii\web\AssetBundle;
+//use kholmatov\imagick\Imagick;
 use yii\imagine\Image;
 
 use Yii;
@@ -8,7 +9,6 @@ define("URL_SEPARATOR", "/");
 
 class AssetManager extends AssetBundle {
 
-    const S3Bucket       = "lighttaj";
     const AssetsDirectoryRoot  = "assets";
     const S3AssetsRoot  = "lighttaj";
     const AssetsDirectoryDeals = "deals";
@@ -53,17 +53,26 @@ class AssetManager extends AssetBundle {
 
     private static function getS3() {
         if (!self::$s3) {
+            /*
+            $sharedConfig = [
+                'region'  => 'us-east-1',
+                'version' => 'latest'
+            ];
+            $sdk = new Aws\Sdk($sharedConfig);
+            self::$s3 = $sdk->createS3();
+            */
             $awssdk = Yii::$app->awssdk->getAwsSdk();
             self::$s3 = $awssdk->createS3();
         }
-
+        //putenv("AWS_ACCESS_KEY");
+        //putenv("AWS_SECRET_ACCESS_KEY=lighttaj");
         return self::$s3;
     }
 
     static public function uploadToS3($src, $dst) {
         $client = self::getS3();
         $result = $client->putObject(array(
-            'Bucket'       => self::S3Bucket,
+            'Bucket'       => 'lighttaj',
             'Key'          => $dst,
             'SourceFile'   => $src,
             'ContentType'  => 'image/jpeg',
@@ -81,7 +90,7 @@ class AssetManager extends AssetBundle {
     static public function deleteFromS3($dst) {
         $client = self::getS3();
         $result = $client->deleteObject(array(
-            'Bucket'       => self::S3Bucket,
+            'Bucket'       => 'lighttaj',
             'Key'          => $dst,
             'StorageClass' => 'REDUCED_REDUNDANCY',
             'Metadata'     => array(
@@ -93,56 +102,16 @@ class AssetManager extends AssetBundle {
         return $result;
     }
 
-    //deleting multiple objects from an Amazon S3
-    static public function deletingMultiple($key_array){
-        $client = self::getS3();
-        // Delete objects from a bucket
-        $result = $client->deleteObjects(array(
-            'Bucket'  => self::S3Bucket,
-            'Delete'=>Array(
-                'Objects' => $key_array
-            ),
-            'Quiet' => true
-        ));
-
-
-
-        /*
-         * $key_array = array(
-                array('Key' => $keyname1),
-                array('Key' => $keyname2),
-                array('Key' => $keyname3),
-            )
-         */
-        return $result;
-    }
-
-
-
-
-
     // ============================
     //      Image Manipulation
     // ============================
     static public function fetchImageFilesForDeal($dealID, $imageList) {
-
         if (empty($imageList)) return [];
         $imageIds = explode(',', $imageList);
+
         $images = [];
         foreach ($imageIds as $imageId) {
             $images[] = self::URLForDealImageFile($dealID, self::fileNameForDealImageFile($dealID, $imageId));
-            //$images[] = new Image($imageId, $dealID, $imageURL);
-        }
-        return $images;
-    }
-
-    static public function fetchImageFilesForDealDelete($dealID, $imageList) {
-
-        if (empty($imageList)) return [];
-        $imageIds = explode(',', $imageList);
-        $images = [];
-        foreach ($imageIds as $imageId) {
-            $images[] = self::pathForDealImageFile($dealID, self::fileNameForDealImageFile($dealID, $imageId));
             //$images[] = new Image($imageId, $dealID, $imageURL);
         }
         return $images;
@@ -345,22 +314,6 @@ class AssetManager extends AssetBundle {
         return Status::Success();
     }
 
-    static public function deleteCategoryIconFromS3($categoryID)
-    {
-        $big = self::AssetsDirectoryCategoryIcons.'/'.$categoryID.'_'.self::ICON_PREFIX_BIG.'.png';
-        $med = self::AssetsDirectoryCategoryIcons.'/'.$categoryID.'_'.self::ICON_PREFIX_MEDIUM.'.png';
-        $small = self::AssetsDirectoryCategoryIcons.'/'.$categoryID.'_'.self::ICON_PREFIX_SMALL.'.png';
-
-        $key_array = array (
-                array ('Key' => $big),
-                array ('Key' => $med),
-                array ('Key' => $small)
-          );
-
-        $result = self::deletingMultiple($key_array);
-
-    }
-
 
 
     // ============================
@@ -425,13 +378,7 @@ class AssetManager extends AssetBundle {
         return self::URLForDealDirectory($dealID) . URL_SEPARATOR . $imageFile;
     }
 
-    static public function pathForDealImageFile($dealID, $imageFile) {
-        // TODO remove me after migration to AWS!!
-        //self::uploadToS3(self::pathForDealDirectory($dealID) . DIRECTORY_SEPARATOR . $imageFile, self::s3KeyForDeal($dealID, $imageFile));
-        return self::pathForDealDirectory($dealID) . URL_SEPARATOR . $imageFile;
-    }
-
-    static public function  URLForUserImageFile($userID) {
+    static public function URLForUserImageFile($userID) {
         // TODO remove me after migration to AWS!!
         //self::uploadToS3(self::pathForUserPhoto($userID), self::s3KeyForUserPhoto($userID));
         return self::URLForAssetsDirectory() . DIRECTORY_SEPARATOR . self::s3KeyForUserPhoto($userID);
@@ -445,16 +392,12 @@ class AssetManager extends AssetBundle {
         return self::s3BucketForUser($userID) . "/photo.jpg";
     }
 
-    static public function s3KeyForDeal($dealID, $imageFile) {
+    static private function s3KeyForDeal($dealID, $imageFile) {
         return self::AssetsDirectoryDeals . URL_SEPARATOR . self::indexForID($dealID) . DIRECTORY_SEPARATOR . $dealID . URL_SEPARATOR . $imageFile;
     }
 
     static public function URLForDealDirectory($dealID) {
         return self::URLForAssetsDirectory() . URL_SEPARATOR . self::AssetsDirectoryDeals . URL_SEPARATOR . self::indexForID($dealID) . DIRECTORY_SEPARATOR . $dealID;
-    }
-
-    static public function pathForDealDirectory($dealID) {
-        return  self::AssetsDirectoryDeals . URL_SEPARATOR . self::indexForID($dealID) . DIRECTORY_SEPARATOR . $dealID;
     }
 
     static public function URLForUserDirectory($userID) {
@@ -492,14 +435,14 @@ class AssetManager extends AssetBundle {
     // ============================
     //         Filesystem
     // ============================
-//    static private function pathForDealImageFile($dealID, $imageIndex, $imageID = null) {
-//        $name = ($imageID !== null) ? $imageID : self::createImageIdentifierForIndex($imageIndex);
-//        return self::pathForDealDirectory($dealID) . DIRECTORY_SEPARATOR . $name . self::ImageFileExtension;
-//    }
+    static private function pathForDealImageFile($dealID, $imageIndex, $imageID = null) {
+        $name = ($imageID !== null) ? $imageID : self::createImageIdentifierForIndex($imageIndex);
+        return self::pathForDealDirectory($dealID) . DIRECTORY_SEPARATOR . $name . self::ImageFileExtension;
+    }
 
-//    static private function pathForDealDirectory($dealID) {
-//        return self::pathForRoot() . DIRECTORY_SEPARATOR . self::AssetsDirectoryDeals . DIRECTORY_SEPARATOR . self::indexForID($dealID) . DIRECTORY_SEPARATOR . $dealID;
-//    }
+    static private function pathForDealDirectory($dealID) {
+        return self::pathForRoot() . DIRECTORY_SEPARATOR . self::AssetsDirectoryDeals . DIRECTORY_SEPARATOR . self::indexForID($dealID) . DIRECTORY_SEPARATOR . $dealID;
+    }
 
     static public function pathForCategoryIconDirectory() {
         return self::pathForRoot() . DIRECTORY_SEPARATOR . self::AssetsDirectoryCategoryIcons;

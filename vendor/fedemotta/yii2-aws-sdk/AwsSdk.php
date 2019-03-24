@@ -29,8 +29,6 @@ class AwsSdk extends Component
      * @var string specifies the AWS version
      */
     public $version = null;
-
-    public $scheme = '';
     
     /*
      * @var array specifies extra params
@@ -61,8 +59,7 @@ class AwsSdk extends Component
         $this->_awssdk = new Aws\Sdk(array_merge([ 
                                         'credentials' => $this->credentials,
                                         'region'=>$this->region,
-                                        'version'=>$this->version,
-                                        'scheme' => $this->scheme
+                                        'version'=>$this->version
                                     ],$this->extra));
     }
 }
